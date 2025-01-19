@@ -1,0 +1,4 @@
+STATUS 401 Hatalı authorization yapılması durumunda status: 401 , "exception": "ClientApiAuthenticationException" mesajı dönecektir.
+STATUS 403 Trendyol Partner API'ye yapılacak tüm isteklerde, Auth ve User-Agent bilgileri Header'da bulunmalıdır. User-Agent bilgisi olmayan istekler, 403 hatası alarak engellenecektir.
+STATUS 429 Trendyol Partner API'ye yapacağınız tüm isteklerde aynı endpointe 10 saniye içerisinde maksimum 50 request atabilirsiniz. 51. requesti denediğiniz an sizlere "429 status code and it say too.many.requests" hatası dönecektir.
+STATUS 503 Test ortamında alacağınız 503 hatası IP yetkilendirmesi olmamasından kaynaklıdır.
