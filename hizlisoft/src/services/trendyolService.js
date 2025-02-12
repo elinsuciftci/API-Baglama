@@ -1,13 +1,14 @@
-//trendyol fonksiyonlarını yönettiğimiz kısım
-
+// Trendyol API Fonksiyonlarını Yönettiğimiz Kısım
 const axios = require('axios');
-const {trendyolBaseUrl, sellerId, apiToken} = require('../config');
+const { trendyolBaseUrl, sellerId, apiToken } = require('../config');
 
 const trendyolClient = axios.create({
-    baseURL: `${trendyolBaseUrl}/integration/product`, headers: {
+    baseURL: `${trendyolBaseUrl}/integration/product`,
+    headers: {
         Authorization: `Bearer ${apiToken}`,
     },
 });
+
 const addProduct = async (data) => {
     try {
         const payload = {
@@ -15,64 +16,65 @@ const addProduct = async (data) => {
                 barcode: data.barcode,
                 title: data.title,
                 productMainId: data.productMainId,
-                brandId : data.brandId,
-                categoryId : data.categoryId,
+                brandId: data.brandId,
+                categoryId: data.categoryId,
                 quantity: data.quantity,
-                stockCode : data.stockCode,
-                dimensionalWeight : data.dimensionalWeight,
-                description : data.description,
-                currencyType : data.currencyType,
-                listPrice : data.listPrice,
-                salePrice : data.salePrice,
+                stockCode: data.stockCode,
+                dimensionalWeight: data.dimensionalWeight,
+                description: data.description,
+                currencyType: data.currencyType,
+                listPrice: data.listPrice,
+                salePrice: data.salePrice,
                 cargoCompanyId: data.cargoCompanyId,
-                deliveryDuration : data.deliveryDuration,
+                deliveryDuration: data.deliveryDuration,
                 deliveryOption: data.deliveryOption,
                 images: data.images,
-                vatRate : data.vatRate,
+                vatRate: data.vatRate,
                 shipmentAddressId: data.shipmentAddressId,
                 returningAddressId: data.returningAddressId,
-                attributes:data.attributes
+                attributes: data.attributes
             }]
         };
 
         const response = await trendyolClient.post(`/sellers/${sellerId}/products`, payload);
         return response.data;
     } catch (error) {
-        console.error('Error updating price and inventory:', error.response?.data || error.message);
+        console.error('Error adding product:', error.response?.data || error.message);
         throw error;
     }
 };
-const updateProduct= async (data) => {
+
+const updateProduct = async (data) => {
     try {
         const payload = {
             items: [{
                 barcode: data.barcode,
                 title: data.title,
                 productMainId: data.productMainId,
-                brandId : data.brandId,
-                categoryId : data.categoryId,
+                brandId: data.brandId,
+                categoryId: data.categoryId,
                 quantity: data.quantity,
-                stockCode : data.stockCode,
-                dimensionalWeight : data.dimensionalWeight,
-                description : data.description,
-                currencyType : data.currencyType,
-                listPrice : data.listPrice,
-                salePrice : data.salePrice,
+                stockCode: data.stockCode,
+                dimensionalWeight: data.dimensionalWeight,
+                description: data.description,
+                currencyType: data.currencyType,
+                listPrice: data.listPrice,
+                salePrice: data.salePrice,
                 cargoCompanyId: data.cargoCompanyId,
-                deliveryDuration : data.deliveryDuration,
+                deliveryDuration: data.deliveryDuration,
                 deliveryOption: data.deliveryOption,
                 images: data.images,
-                vatRate : data.vatRate,
+                vatRate: data.vatRate,
                 shipmentAddressId: data.shipmentAddressId,
                 returningAddressId: data.returningAddressId,
-                attributes:data.attributes
+                attributes: data.attributes
             }]
         };
 
-        const response = await trendyolClient.post(`/sellers/{sellerId}/products`, payload);
+        const response = await trendyolClient.post(`/sellers/${sellerId}/products`, payload);
         return response.data;
     } catch (error) {
-        console.error('Error updating products:', error.response?.data || error.message);
+        console.error('Error updating product:', error.response?.data || error.message);
         throw error;
     }
 };
@@ -83,8 +85,8 @@ const updatePriceAndInventory = async (data) => {
             items: [{
                 barcode: data.barcode,
                 quantity: data.quantity,
-                listPrice : data.listPrice,
-                salePrice : data.salePrice,
+                listPrice: data.listPrice,
+                salePrice: data.salePrice,
             }]
         };
 
@@ -97,27 +99,62 @@ const updatePriceAndInventory = async (data) => {
 };
 
 const getSuppliersAddresses = async () => {
-    const response = await trendyolClient.get('/sellers/${sellerId}/addresses');
-    return response.data;
-};
-const getBrands = async () => {
-    const response = await trendyolClient.get('/brands');
-    return response.data;
-};
-const getCategoryTree = async () => {
-    const response = await trendyolClient.get('/product-categories');
-    return response.data;
-};
-const getCategoryAttributes = async () => {
-    const response = await trendyolClient.get('/product-categories/{categoriId}/attributes');
-    return response.data;
-};
-const getBatchRequestResult = async () => {
-    const response = await trendyolClient.get('/sellers/{sellerId}/products/batch-requests/{batchRequestId}');
-    return response.data;
+    try {
+        const response = await trendyolClient.get(`/sellers/${sellerId}/addresses`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching supplier addresses:', error.response?.data || error.message);
+        throw error;
+    }
 };
 
+const getBrands = async () => {
+    try {
+        const response = await trendyolClient.get('/brands');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching brands:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+const getCategoryTree = async () => {
+    try {
+        const response = await trendyolClient.get('/product-categories');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching category tree:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+const getCategoryAttributes = async (categoriId) => {
+    try {
+        const response = await trendyolClient.get(`/product-categories/${categoriId}/attributes`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching category attributes:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+const getBatchRequestResult = async (sellerId, batchRequestId) => {
+    try {
+        const response = await trendyolClient.get(`/sellers/${sellerId}/products/batch-requests/${batchRequestId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching batch request result:', error.response?.data || error.message);
+        throw error;
+    }
+};
 
 module.exports = {
-    addProduct,updateProduct, updatePriceAndInventory, getSuppliersAddresses, getBrands, getCategoryTree, getCategoryAttributes,getBatchRequestResult,
+    addProduct,
+    updateProduct,
+    updatePriceAndInventory,
+    getSuppliersAddresses,
+    getBrands,
+    getCategoryTree,
+    getCategoryAttributes,
+    getBatchRequestResult
 };
